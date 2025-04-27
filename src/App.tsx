@@ -11,7 +11,7 @@ interface Testimonial {
 const testimonials: Testimonial[] = [
   {
     name: ' דוד שלום',
-    image: '/yoram2.jpg',
+    image: 'https://randomuser.me/api/portraits/men/32.jpg',
     text: 'יורם עזר לנו בתקופה הקשה ביותר במשפחה שלנו. האדיבות והמקצועיות שלו עשו את כל ההבדל. הוא הצליח ליצור אווירה של אמון וכבוד הדדי, וזה מה שאפשר לנו להגיע להסכמות שהיו טובות לכולם. מומלץ בחום לכל מי שמחפש מגשר אמיתי.'
   },
   {
@@ -35,6 +35,62 @@ const photos = [
   "/yoram1.jpg"
 ];
 
+const articles = [
+  {
+    title: 'גישור ככלי לפתרון סכסוכים',
+    content: 'גישור הוא תהליך יישוב סכסוכים בו צד שלישי ניטרלי מסייע לצדדים להגיע להסכמה משותפת. הגישור מאפשר דיאלוג פתוח, חוסך זמן וכסף, ומסייע לשמור על יחסים תקינים גם לאחר הסכסוך.'
+  },
+  {
+    title: 'סכסוכי ירושה – איך מתמודדים?',
+    content: 'סכסוכי ירושה נפוצים במשפחות רבות. גישור בתחום זה מסייע לצדדים להגיע להסכמות הוגנות, תוך שמירה על כבוד המשפחה ומניעת הליכים משפטיים ממושכים.'
+  },
+  {
+    title: 'הדרך לשלום בין אנשים',
+    content: 'סכסוכים בין אנשים יכולים להיגרם ממגוון סיבות. גישור מקצועי מסייע להבין את הצרכים של כל צד, לבנות אמון ולמצוא פתרון שמקובל על כולם.'
+  }
+];
+
+function PolicyPage() {
+  return (
+    <div className="max-w-2xl mx-auto p-6 text-right">
+      <h2 className="text-2xl font-bold mb-4">מדיניות האתר ותקנון</h2>
+      <p>כל הזכויות שמורות ליורם שחר. אין להעתיק, לשכפל או להשתמש בתכני האתר ללא אישור מראש. האתר פועל בהתאם לחוקי מדינת ישראל ומתחייב לשמור על פרטיות המשתמשים.</p>
+    </div>
+  );
+}
+
+function AccessibilityPage() {
+  return (
+    <div className="max-w-2xl mx-auto p-6 text-right">
+      <h2 className="text-2xl font-bold mb-4">הצהרת נגישות</h2>
+      <p>האתר נבנה תוך הקפדה על עקרונות הנגישות לכלל האוכלוסייה. במידה ונתקלתם בבעיה, אנא פנו אלינו ונפעל לתקנה בהקדם.</p>
+    </div>
+  );
+}
+
+function AboutPage() {
+  return (
+    <div className="max-w-2xl mx-auto p-6 text-right">
+      <h2 className="text-2xl font-bold mb-4">אודות</h2>
+      <p>יורם שחר, מגשר מקצועי עם ניסיון של למעלה מ-20 שנה, מתמחה בפתרון סכסוכים משפחתיים, עסקיים וירושה. בעל גישה אנושית, מקצועית ומקרבת, ומאמין שכל סכסוך ניתן לפתרון בדרכי שלום.</p>
+    </div>
+  );
+}
+
+function ArticlesPage() {
+  return (
+    <div className="max-w-2xl mx-auto p-6 text-right">
+      <h2 className="text-2xl font-bold mb-4">מאמרים</h2>
+      {articles.map((article, idx) => (
+        <div key={idx} className="mb-8">
+          <h3 className="text-xl font-semibold mb-2">{article.title}</h3>
+          <p>{article.content}</p>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 const App: React.FC = () => {
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
   const [formData, setFormData] = useState({
@@ -43,6 +99,7 @@ const App: React.FC = () => {
     email: '',
     message: ''
   });
+  const [page, setPage] = useState<'home'|'policy'|'accessibility'|'about'|'articles'>('home');
 
   const nextPhoto = () => {
     setCurrentPhotoIndex((prev) => (prev + 1) % photos.length);
@@ -84,6 +141,13 @@ const App: React.FC = () => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
+
+  if (page !== 'home') {
+    if (page === 'policy') return <PolicyPage />;
+    if (page === 'accessibility') return <AccessibilityPage />;
+    if (page === 'about') return <AboutPage />;
+    if (page === 'articles') return <ArticlesPage />;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-yellow-50 to-green-100">
@@ -297,7 +361,7 @@ const App: React.FC = () => {
       </section>
 
       {/* Footer */}
-      <footer className="bg-primary text-white py-8">
+      <footer className="bg-primary text-white py-8 mt-12">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="mb-4 md:mb-0">
@@ -309,6 +373,12 @@ const App: React.FC = () => {
                 <p>טלפון: 050-5508499</p>
               </a>
               <p>אימייל: contact@yoramshahar.com</p>
+            </div>
+            <div className="flex flex-wrap gap-4 mt-4 md:mt-0">
+              <button onClick={() => setPage('policy')} className="underline hover:text-secondary">מדיניות האתר</button>
+              <button onClick={() => setPage('accessibility')} className="underline hover:text-secondary">נגישות</button>
+              <button onClick={() => setPage('about')} className="underline hover:text-secondary">אודות</button>
+              <button onClick={() => setPage('articles')} className="underline hover:text-secondary">מאמרים</button>
             </div>
           </div>
         </div>

@@ -9,6 +9,7 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
+    <img src="/logo192.png" className="App-logo" alt="logo" />
     <App />
   </React.StrictMode>
 );

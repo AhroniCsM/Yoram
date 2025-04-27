@@ -365,7 +365,7 @@ const App: React.FC = () => {
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="mb-4 md:mb-0 flex flex-col items-center md:items-start">
-              <img src="/logo.png" alt="לוגו" className="w-20 h-20 mb-2" />
+              <img src="/logo513.png" alt="לוגו" className="w-20 h-20 mb-2" />
               <h3 className="text-xl font-bold">יורם שחר</h3>
               <p className="mt-2">מגשר מקצועי</p>
             </div>

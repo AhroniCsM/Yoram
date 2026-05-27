@@ -25,6 +25,9 @@ const CALLMEBOT_APIKEY = process.env.CALLMEBOT_APIKEY;
 // --- Admin page credentials (set as Fly secrets) ---
 const ADMIN_USER = process.env.ADMIN_USER || '';
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || '';
+// The admin URL path is itself a secret (set ADMIN_PATH on Fly). The default
+// here is only a harmless fallback; the real path never lives in the repo.
+const ADMIN_PATH = '/' + (process.env.ADMIN_PATH || 'admin').replace(/^\/+|\/+$/g, '');
 
 // Lead log lives on the mounted Fly volume so it survives deploys.
 const DATA_DIR = process.env.DATA_DIR || __dirname;
@@ -262,7 +265,7 @@ function renderAdmin(leads) {
 </style></head><body><div class="wrap">
   <div class="bar">
     <div><h1>פניות מהאתר</h1><p class="sub">סה״כ ${leads.length} פניות · ממוין מהחדש לישן</p></div>
-    ${leads.length ? '<a class="btn" href="/admin/export.csv">הורד CSV</a>' : ''}
+    ${leads.length ? `<a class="btn" href="${ADMIN_PATH}/export.csv">הורד CSV</a>` : ''}
   </div>
   ${
     leads.length
@@ -272,12 +275,12 @@ function renderAdmin(leads) {
 </div></body></html>`;
 }
 
-app.get('/admin', requireAdmin, (_req, res) => {
+app.get(ADMIN_PATH, requireAdmin, (_req, res) => {
   const leads = readLeads().reverse(); // newest first
   res.type('html').send(renderAdmin(leads));
 });
 
-app.get('/admin/export.csv', requireAdmin, (_req, res) => {
+app.get(ADMIN_PATH + '/export.csv', requireAdmin, (_req, res) => {
   const leads = readLeads().reverse();
   const esc = (v) => `"${String(v == null ? '' : v).replace(/"/g, '""')}"`;
   const header = ['timestamp', 'name', 'phone', 'email', 'message', 'ip'];

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
+import Header from './Header';
 import Footer from './Footer';
 import StickyCallBar from './StickyCallBar';
 import WhatsAppFab from './WhatsAppFab';
@@ -12,6 +13,7 @@ const Layout: React.FC = () => (
     >
       דלג לתוכן הראשי
     </a>
+    <Header />
     <main id="main" className="flex-1 pb-20 md:pb-0">
       <Outlet />
     </main>

@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { ArrowDownIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 import { testimonials, services, faqs, PHONE_DISPLAY, PHONE_TEL } from '../data';
 
-const photos = ['/yoram1.jpg', '/yoram2.jpg', '/yoram3.jpg'];
+const photos = ['/yoram1.jpg', '/yoram2.jpg'];
 
 const Home: React.FC = () => {
   useEffect(() => {

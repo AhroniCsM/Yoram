@@ -2,16 +2,10 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { PHONE_DISPLAY, PHONE_TEL } from '../data';
 
-const HomeHeartMark: React.FC = () => (
-  <svg viewBox="0 0 64 64" width={64} height={64} className="w-16 h-16 mb-2" role="img" aria-label="לוגו יורם שחר - שלום בית" focusable="false">
-    <g fill="#F4E9D8" stroke="#F4E9D8" strokeWidth="2" strokeLinejoin="round">
-      <path d="M32 16 L50 31 L14 31 Z" />
-      <path d="M19 31 H45 V47 H19 Z" />
-    </g>
-    <path
-      d="M32 45 C 29.8 42.4, 25 39.4, 25 35.7 C 25 33.7, 26.6 32.3, 28.4 32.3 C 29.8 32.3, 31 33.2, 32 34.6 C 33 33.2, 34.2 32.3, 35.6 32.3 C 37.4 32.3, 39 33.7, 39 35.7 C 39 39.4, 34.2 42.4, 32 45 Z"
-      fill="#E67E22"
-    />
+const UnityHeartMark: React.FC = () => (
+  <svg viewBox="0 0 64 64" width={64} height={64} className="w-16 h-16 mb-2" role="img" aria-label="לוגו יורם שחר - גישור" focusable="false">
+    <path d="M31.5 51 C 31.5 51, 12 37, 12 24.5 C 12 17.5, 18.5 14, 24.2 17 C 27.8 19, 30.4 22, 31.5 26 L31.5 51 Z" fill="#F4E9D8" />
+    <path d="M32.5 51 C 32.5 51, 52 37, 52 24.5 C 52 17.5, 45.5 14, 39.8 17 C 36.2 19, 33.6 22, 32.5 26 L32.5 51 Z" fill="#E67E22" />
   </svg>
 );
 
@@ -20,7 +14,7 @@ const Footer: React.FC = () => (
     <div className="container mx-auto px-4">
       <div className="flex flex-col md:flex-row justify-between items-center gap-6">
         <div className="flex flex-col items-center md:items-start">
-          <HomeHeartMark />
+          <UnityHeartMark />
           <h3 className="text-xl font-bold">יורם שחר</h3>
           <p className="mt-2">מגשר מקצועי</p>
         </div>

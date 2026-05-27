@@ -21,3 +21,16 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# vercel
+.vercel
+
+# leftover dev artifacts + lead data (never commit — contains personal info)
+contacts.db
+contact.log
+leads.jsonl
+
+# env files
+.env
+.env.*
+!.env.example

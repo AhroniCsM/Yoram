@@ -2,42 +2,81 @@
 <html lang="he" dir="rtl">
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/svg+xml" href="%PUBLIC_URL%/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#2C3E50" />
+    <title>יורם שחר - מגשר מקצועי | גישור משפחתי, זוגי ועסקי בירושלים</title>
     <meta
       name="description"
-      content="יורם שחר - מגשר מקצועי עם ניסיון של למעלה מ-20 שנה בפתרון סכסוכים משפחתיים, זוגיים ועסקיים"
+      content="יורם שחר - מגשר מקצועי בירושלים עם ניסיון של למעלה מ-20 שנה בפתרון סכסוכים משפחתיים, זוגיים, עסקיים וירושות. פגישת ייעוץ ראשונה חינם."
     />
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-    <!--
-      manifest.json provides metadata used when your web app is installed on a
-      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
-    -->
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <!--
-      Notice the use of %PUBLIC_URL% in the tags above.
-      It will be replaced with the URL of the `public` folder during the build.
-      Only files inside the `public` folder can be referenced from the HTML.
+    <meta name="keywords" content="גישור, מגשר, יורם שחר, גישור משפחתי, גישור זוגי, גירושין, גישור עסקי, ירושלים, סכסוכי ירושה" />
+    <link rel="canonical" href="https://yoramshahar.com/" />
 
-      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
-      work correctly both with client-side routing and a non-root public URL.
-      Learn how to configure a non-root public URL by running `npm run build`.
-    -->
-    <title>יורם שחר - מגשר מקצועי</title>
+    <!-- Open Graph / Facebook / WhatsApp -->
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="he_IL" />
+    <meta property="og:url" content="https://yoramshahar.com/" />
+    <meta property="og:title" content="יורם שחר - מגשר מקצועי" />
+    <meta
+      property="og:description"
+      content="גישור משפחתי, זוגי ועסקי בירושלים. ניסיון של למעלה מ-20 שנה. פגישת ייעוץ ראשונה חינם."
+    />
+    <meta property="og:image" content="https://yoramshahar.com/og-image.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="יורם שחר - מגשר מקצועי" />
+    <meta
+      name="twitter:description"
+      content="גישור משפחתי, זוגי ועסקי בירושלים. ניסיון של למעלה מ-20 שנה."
+    />
+    <meta name="twitter:image" content="https://yoramshahar.com/og-image.jpg" />
+
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+
+    <!-- Schema.org structured data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ProfessionalService",
+      "@id": "https://yoramshahar.com/#business",
+      "name": "יורם שחר - מגשר מקצועי",
+      "description": "מגשר מקצועי בעל ניסיון של למעלה מ-20 שנה בפתרון סכסוכים משפחתיים, זוגיים ועסקיים.",
+      "url": "https://yoramshahar.com/",
+      "telephone": "+972505508499",
+      "image": "https://yoramshahar.com/yoram1.jpg",
+      "priceRange": "₪₪",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "ירושלים",
+        "addressCountry": "IL"
+      },
+      "areaServed": {
+        "@type": "City",
+        "name": "ירושלים"
+      },
+      "founder": {
+        "@type": "Person",
+        "name": "יורם שחר",
+        "jobTitle": "מגשר מקצועי"
+      },
+      "serviceType": [
+        "גישור משפחתי",
+        "גישור זוגי וגירושין",
+        "גישור עסקי",
+        "סכסוכי ירושה"
+      ],
+      "knowsLanguage": ["he", "iw"]
+    }
+    </script>
   </head>
   <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <noscript>יש להפעיל JavaScript כדי לצפות באתר.</noscript>
     <div id="root"></div>
-    <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
-
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
-
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
   </body>
 </html>

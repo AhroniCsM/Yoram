@@ -103,24 +103,29 @@ function checkRateLimit(ip) {
 async function sendEmail(lead, ip) {
   if (!RESEND_KEY || !NOTIFY_EMAIL) return;
   const resend = new Resend(RESEND_KEY);
-  await resend.emails.send({
+  const emailRow = lead.email
+    ? `<p><strong>אימייל:</strong> <a href="mailto:${escapeHtml(lead.email)}">${escapeHtml(lead.email)}</a></p>`
+    : '';
+  const payload = {
     from: `Yoram Shahar Site <${FROM_EMAIL}>`,
     to: NOTIFY_EMAIL,
-    replyTo: lead.email,
     subject: `פנייה חדשה מהאתר: ${lead.name}`,
     html: `
       <div dir="rtl" style="font-family: Arial, sans-serif; line-height: 1.6;">
         <h2>פנייה חדשה מהאתר</h2>
         <p><strong>שם:</strong> ${escapeHtml(lead.name)}</p>
         <p><strong>טלפון:</strong> <a href="tel:${escapeHtml(lead.phone)}">${escapeHtml(lead.phone)}</a></p>
-        <p><strong>אימייל:</strong> <a href="mailto:${escapeHtml(lead.email)}">${escapeHtml(lead.email)}</a></p>
+        ${emailRow}
         <p><strong>הודעה:</strong></p>
         <blockquote style="border-right: 3px solid #E67E22; padding-right: 10px; color: #333;">
           ${escapeHtml(lead.message).replace(/\n/g, '<br>')}
         </blockquote>
         <hr><p style="color:#999;font-size:12px;">IP: ${escapeHtml(ip)} · ${new Date().toISOString()}</p>
       </div>`,
-  });
+  };
+  // Only set reply-to when we actually have a valid email (Google leads may lack one).
+  if (lead.email) payload.replyTo = lead.email;
+  await resend.emails.send(payload);
 }
 
 async function sendWhatsApp(lead) {

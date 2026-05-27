@@ -28,6 +28,8 @@ const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || '';
 // The admin URL path is itself a secret (set ADMIN_PATH on Fly). The default
 // here is only a harmless fallback; the real path never lives in the repo.
 const ADMIN_PATH = '/' + (process.env.ADMIN_PATH || 'admin').replace(/^\/+|\/+$/g, '');
+// Shared key for the Google Ads lead-form webhook (set GOOGLE_LEAD_KEY on Fly).
+const GOOGLE_LEAD_KEY = process.env.GOOGLE_LEAD_KEY || '';
 
 // Lead log lives on the mounted Fly volume so it survives deploys.
 const DATA_DIR = process.env.DATA_DIR || __dirname;
@@ -159,7 +161,7 @@ app.post('/api/contact', async (req, res) => {
 
     // Persist (best-effort, append-only log on the volume).
     try {
-      fs.appendFileSync(LEADS_FILE, JSON.stringify({ ...lead, ip, ts: new Date().toISOString() }) + '\n');
+      fs.appendFileSync(LEADS_FILE, JSON.stringify({ ...lead, source: 'אתר', ip, ts: new Date().toISOString() }) + '\n');
     } catch (e) {
       console.error('lead log error', e);
     }
@@ -174,6 +176,49 @@ app.post('/api/contact', async (req, res) => {
   } catch (e) {
     console.error('contact handler error', e);
     return res.status(500).json({ error: 'שגיאת שרת' });
+  }
+});
+
+// ---------------------------------------------------------------------------
+// Google Ads Lead Form webhook. Google POSTs each lead here; we verify the
+// shared key, store it in the same lead log, and notify. Appears in /admin.
+// ---------------------------------------------------------------------------
+app.post('/api/google-lead', async (req, res) => {
+  try {
+    const body = req.body || {};
+    if (!GOOGLE_LEAD_KEY || body.google_key !== GOOGLE_LEAD_KEY) {
+      return res.status(401).json({ error: 'invalid key' });
+    }
+    const cols = Array.isArray(body.user_column_data) ? body.user_column_data : [];
+    const pick = (...ids) => {
+      for (const id of ids) {
+        const c = cols.find((x) => String(x.column_id).toUpperCase() === id);
+        if (c && c.string_value) return c.string_value;
+      }
+      return '';
+    };
+    const name = pick('FULL_NAME', 'FIRST_NAME', 'LAST_NAME');
+    const phone = pick('PHONE_NUMBER');
+    const email = pick('EMAIL');
+    const message = body.is_test ? '[בדיקה] ליד מ-Google Ads' : 'ליד שהתקבל דרך Google Ads';
+    const lead = { name, phone, email, message };
+
+    try {
+      fs.appendFileSync(
+        LEADS_FILE,
+        JSON.stringify({ ...lead, source: 'Google Ads', is_test: !!body.is_test, lead_id: body.lead_id, ip: 'google-ads', ts: new Date().toISOString() }) + '\n'
+      );
+    } catch (e) {
+      console.error('google-lead log error', e);
+    }
+
+    if (!body.is_test) {
+      await Promise.allSettled([sendEmail(lead, 'Google Ads'), sendWhatsApp(lead)]);
+    }
+    return res.status(200).json({ status: 'ok' });
+  } catch (e) {
+    console.error('google-lead error', e);
+    return res.status(500).json({ error: 'server error' });
   }
 });
 
@@ -231,9 +276,12 @@ function renderAdmin(leads) {
   const rows = leads
     .map((l, i) => {
       const when = new Date(l.ts).toLocaleString('he-IL', { dateStyle: 'short', timeStyle: 'short' });
+      const source = l.source || 'אתר';
+      const badge = source === 'Google Ads' ? 'background:#4285F4;color:#fff' : 'background:#E67E22;color:#fff';
       return `<tr>
         <td>${leads.length - i}</td>
         <td class="nowrap">${escapeHtml(when)}</td>
+        <td><span class="src" style="${badge}">${escapeHtml(source)}</span></td>
         <td>${escapeHtml(l.name || '')}</td>
         <td class="nowrap"><a href="tel:${escapeHtml(l.phone || '')}">${escapeHtml(l.phone || '')}</a></td>
         <td><a href="mailto:${escapeHtml(l.email || '')}">${escapeHtml(l.email || '')}</a></td>
@@ -262,6 +310,7 @@ function renderAdmin(leads) {
   .nowrap{white-space:nowrap;}
   .msg{max-width:380px;white-space:pre-wrap;}
   .empty{background:#fff;padding:40px;text-align:center;color:#889;border-radius:10px;}
+  .src{display:inline-block;padding:2px 8px;border-radius:99px;font-size:12px;white-space:nowrap;}
 </style></head><body><div class="wrap">
   <div class="bar">
     <div><h1>פניות מהאתר</h1><p class="sub">סה״כ ${leads.length} פניות · ממוין מהחדש לישן</p></div>
@@ -269,7 +318,7 @@ function renderAdmin(leads) {
   </div>
   ${
     leads.length
-      ? `<table><thead><tr><th>#</th><th>תאריך</th><th>שם</th><th>טלפון</th><th>אימייל</th><th>הודעה</th></tr></thead><tbody>${rows}</tbody></table>`
+      ? `<table><thead><tr><th>#</th><th>תאריך</th><th>מקור</th><th>שם</th><th>טלפון</th><th>אימייל</th><th>הודעה</th></tr></thead><tbody>${rows}</tbody></table>`
       : '<div class="empty">אין עדיין פניות.</div>'
   }
 </div></body></html>`;
@@ -283,9 +332,9 @@ app.get(ADMIN_PATH, requireAdmin, (_req, res) => {
 app.get(ADMIN_PATH + '/export.csv', requireAdmin, (_req, res) => {
   const leads = readLeads().reverse();
   const esc = (v) => `"${String(v == null ? '' : v).replace(/"/g, '""')}"`;
-  const header = ['timestamp', 'name', 'phone', 'email', 'message', 'ip'];
+  const header = ['timestamp', 'source', 'name', 'phone', 'email', 'message', 'ip'];
   const lines = [header.join(',')].concat(
-    leads.map((l) => [l.ts, l.name, l.phone, l.email, l.message, l.ip].map(esc).join(','))
+    leads.map((l) => [l.ts, l.source || 'אתר', l.name, l.phone, l.email, l.message, l.ip].map(esc).join(','))
   );
   res.set('Content-Type', 'text/csv; charset=utf-8');
   res.set('Content-Disposition', 'attachment; filename="leads.csv"');
